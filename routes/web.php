@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AlunoController;
 
-// TEMA 1 - ATV 1
+// tema 1 - atv 1
 
 Route::get('/sobre', function () {
     return 'Página sobre';
@@ -16,7 +16,7 @@ Route::get('/contato', function () {
 });
 
 
-// TEMA 1 - ATV 2
+// tema 1 - atv 2
 
 Route::get('/produto/{id}', function ($id) {
     return 'Produto: ' . $id;
@@ -31,7 +31,7 @@ Route::get('/usuario/{id}', function ($id) {
 });
 
 
-// TEMA 2 - ATV 4
+// tema 2 - atv 4
 
 Route::get('/alunos/create', [AlunoController::class, 'create']);
 
