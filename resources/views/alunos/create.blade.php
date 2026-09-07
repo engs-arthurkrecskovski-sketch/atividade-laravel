@@ -41,15 +41,19 @@
         </p>
 
         <p>
-            <label for="curso">Curso:</label>
-            <input
-                type="text"
-                id="curso"
-                name="curso"
-                value="{{ old('curso') }}"
-                maxlength="255"
-                required
-            >
+            <label for="curso_id">Curso:</label>
+            <select id="curso_id" name="curso_id" required>
+                <option value="">Selecione um curso</option>
+
+                @foreach($cursos as $curso)
+                    <option
+                        value="{{ $curso->id }}"
+                        @selected(old('curso_id') == $curso->id)
+                    >
+                        {{ $curso->nome }}
+                    </option>
+                @endforeach
+            </select>
         </p>
 
         <button type="submit">Cadastrar</button>
