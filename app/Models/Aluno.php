@@ -20,4 +20,9 @@ class Aluno extends Model
     {
         return $this->belongsTo(Curso::class, 'curso_id');
     }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

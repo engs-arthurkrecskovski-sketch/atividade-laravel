@@ -38,7 +38,7 @@ class AlunoController extends Controller
         $curso = Curso::findOrFail($dados['curso_id']);
         $dados['curso'] = $curso->nome;
 
-        Aluno::create($dados);
+        $request->user()->alunos()->create($dados);
 
         return redirect('/alunos')
             ->with('sucesso', 'Aluno cadastrado com sucesso!');
