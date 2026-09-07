@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Aluno;
 
 class AlunoController extends Controller
 {
@@ -40,4 +41,35 @@ class AlunoController extends Controller
     {
         return 'Aluno ' . $id . ' excluído com sucesso';
     }
+
+
+    public function porCurso($curso)
+{
+    $alunos = Aluno::where('curso', $curso)->get();
+
+    return $alunos;
+}
+
+public function porNome($nome)
+{
+    $alunos = Aluno::where('nome', 'like', '%' . $nome . '%')->get();
+
+    return $alunos;
+}
+
+public function recentes()
+{
+    $alunos = Aluno::orderBy('created_at', 'desc')->get();
+
+    return $alunos;
+}
+
+
+public function quantidade()
+{
+    $quantidade = Aluno::count();
+
+    return $quantidade;
+}
+
 }
