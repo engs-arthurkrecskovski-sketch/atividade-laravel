@@ -1,5 +1,4 @@
-@extends('layouts.app')
-
+@extends('layouts.sistema')
 @section('title', 'Visualizar Aluno')
 
 @section('content')

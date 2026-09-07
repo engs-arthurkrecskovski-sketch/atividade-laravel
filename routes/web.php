@@ -2,21 +2,21 @@
 
 use App\Http\Controllers\AlunoController;
 use App\Http\Controllers\CursoController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\View\View;
 
-// TEMA 1 - ATV 1
+Route::get('/', function (): View {
+    return view('welcome');
+});
 
 Route::get('/sobre', function (): string {
     return 'Página sobre';
 });
 
-Route::get('/alunos', [AlunoController::class, 'index']);
-
 Route::get('/contato', function (): string {
     return 'Página de contato';
 });
-
-// TEMA 1 - ATV 2
 
 Route::get('/produto/{id}', function (string $id): string {
     return 'Produto: '.$id;
@@ -30,21 +30,43 @@ Route::get('/usuario/{id}', function (string $id): string {
     return 'Usuário: '.$id;
 });
 
-// TEMA 2 - ATV 4
+Route::get('/dashboard', function (): View {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/alunos/create', [AlunoController::class, 'create']);
+Route::middleware('auth')->group(function (): void {
+    Route::get('/alunos', [AlunoController::class, 'index'])
+        ->name('alunos.index');
 
-Route::post('/alunos', [AlunoController::class, 'store']);
+    Route::get('/alunos/create', [AlunoController::class, 'create'])
+        ->name('alunos.create');
 
-Route::get('/alunos/{id}', [AlunoController::class, 'show']);
+    Route::post('/alunos', [AlunoController::class, 'store'])
+        ->name('alunos.store');
 
-Route::get('/alunos/{id}/edit', [AlunoController::class, 'edit']);
+    Route::get('/alunos/{id}', [AlunoController::class, 'show'])
+        ->name('alunos.show');
 
-Route::put('/alunos/{id}', [AlunoController::class, 'update']);
+    Route::get('/alunos/{id}/edit', [AlunoController::class, 'edit'])
+        ->name('alunos.edit');
 
-Route::delete('/alunos/{id}', [AlunoController::class, 'destroy']);
+    Route::put('/alunos/{id}', [AlunoController::class, 'update'])
+        ->name('alunos.update');
 
-// ATIVIDADE 17 - DESAFIO
+    Route::delete('/alunos/{id}', [AlunoController::class, 'destroy'])
+        ->name('alunos.destroy');
 
-Route::get('/cursos', [CursoController::class, 'index'])
-    ->name('cursos.index');
+    Route::get('/cursos', [CursoController::class, 'index'])
+        ->name('cursos.index');
+
+    Route::get('/profile', [ProfileController::class, 'edit'])
+        ->name('profile.edit');
+
+    Route::patch('/profile', [ProfileController::class, 'update'])
+        ->name('profile.update');
+
+    Route::delete('/profile', [ProfileController::class, 'destroy'])
+        ->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';
