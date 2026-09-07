@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AlunoRequest;
 use App\Models\Aluno;
+use App\Models\Curso;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -26,12 +27,18 @@ class AlunoController extends Controller
 
     public function create(): View
     {
-        return view('alunos.create');
+        $cursos = Curso::orderBy('nome')->get();
+
+        return view('alunos.create', compact('cursos'));
     }
 
     public function store(AlunoRequest $request): RedirectResponse
     {
-        Aluno::create($request->validated());
+        $dados = $request->validated();
+        $curso = Curso::findOrFail($dados['curso_id']);
+        $dados['curso'] = $curso->nome;
+
+        Aluno::create($dados);
 
         return redirect('/alunos')
             ->with('sucesso', 'Aluno cadastrado com sucesso!');
@@ -40,14 +47,20 @@ class AlunoController extends Controller
     public function edit(int $id): View
     {
         $aluno = Aluno::findOrFail($id);
+        $cursos = Curso::orderBy('nome')->get();
 
-        return view('alunos.edit', compact('aluno'));
+        return view('alunos.edit', compact('aluno', 'cursos'));
     }
 
     public function update(AlunoRequest $request, int $id): RedirectResponse
     {
         $aluno = Aluno::findOrFail($id);
-        $aluno->update($request->validated());
+
+        $dados = $request->validated();
+        $curso = Curso::findOrFail($dados['curso_id']);
+        $dados['curso'] = $curso->nome;
+
+        $aluno->update($dados);
 
         return redirect('/alunos')
             ->with('sucesso', 'Aluno atualizado com sucesso!');
