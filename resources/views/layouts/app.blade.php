@@ -11,8 +11,10 @@
         <h1>Sistema de Alunos</h1>
     </header>
 
+    @include('layouts.menu')
+
     <main>
-        @yield('content')
+    @yield('content')
     </main>
 
     <footer>
