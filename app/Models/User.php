@@ -22,6 +22,16 @@ class User extends Authenticatable
         return $this->hasMany(Aluno::class);
     }
 
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isProfessor(): bool
+    {
+        return $this->role === 'professor';
+    }
+
     /**
      * @return array<string, string>
      */
