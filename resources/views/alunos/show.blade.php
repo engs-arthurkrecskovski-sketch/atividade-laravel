@@ -1,9 +1,17 @@
-@extends('layouts.app')
+@extends('layouts.sistema')
 
 @section('title', 'Visualizar Aluno')
 
 @section('content')
-    <h2>Visualizar Aluno</h2>
+    <h2>Dados do aluno</h2>
 
-    <p>Aqui serão exibidas as informações do aluno.</p>
+    <p><strong>Nome:</strong> {{ $aluno->nome }}</p>
+    <p><strong>Email:</strong> {{ $aluno->email }}</p>
+    <p><strong>Curso:</strong> {{ $aluno->curso }}</p>
+    <p>
+        <strong>Cadastrado por:</strong>
+        {{ $aluno->user?->name ?? 'Sem usuário associado' }}
+    </p>
+
+    <a href="{{ route('alunos.index') }}">Voltar</a>
 @endsection

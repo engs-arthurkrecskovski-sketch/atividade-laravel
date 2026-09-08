@@ -2,74 +2,121 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\AlunoRequest;
 use App\Models\Aluno;
+use App\Models\Curso;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\View\View;
 
 class AlunoController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        return 'Lista de alunos';
+        Gate::authorize('viewAny', Aluno::class);
+
+        $alunos = Aluno::orderBy('nome')->get();
+
+        return view('alunos.index', compact('alunos'));
     }
 
-    public function show($id)
+    public function show(int $id): View
     {
-        return 'Exibindo aluno ' . $id;
+        $aluno = Aluno::findOrFail($id);
+
+        Gate::authorize('view', $aluno);
+
+        return view('alunos.show', compact('aluno'));
     }
 
-    public function create()
+    public function create(): View
     {
-        return 'Formulário para cadastrar aluno';
+        Gate::authorize('create', Aluno::class);
+
+        $cursos = Curso::orderBy('nome')->get();
+
+        return view('alunos.create', compact('cursos'));
     }
 
-    public function store(Request $request)
+    public function store(AlunoRequest $request): RedirectResponse
     {
-        return 'Aluno cadastrado com sucesso';
+        Gate::authorize('create', Aluno::class);
+
+        $dados = $request->validated();
+        $curso = Curso::findOrFail($dados['curso_id']);
+        $dados['curso'] = $curso->nome;
+
+        $request->user()->alunos()->create($dados);
+
+        return redirect('/alunos')
+            ->with('sucesso', 'Aluno cadastrado com sucesso!');
     }
 
-    public function edit($id)
+    public function edit(int $id): View
     {
-        return 'Formulário para editar aluno ' . $id;
+        $aluno = Aluno::findOrFail($id);
+
+        Gate::authorize('update', $aluno);
+
+        $cursos = Curso::orderBy('nome')->get();
+
+        return view('alunos.edit', compact('aluno', 'cursos'));
     }
 
-    public function update(Request $request, $id)
+    public function update(AlunoRequest $request, int $id): RedirectResponse
     {
-        return 'Aluno ' . $id . ' atualizado com sucesso';
+        $aluno = Aluno::findOrFail($id);
+
+        Gate::authorize('update', $aluno);
+
+        $dados = $request->validated();
+        $curso = Curso::findOrFail($dados['curso_id']);
+        $dados['curso'] = $curso->nome;
+
+        $aluno->update($dados);
+
+        return redirect('/alunos')
+            ->with('sucesso', 'Aluno atualizado com sucesso!');
     }
 
-    public function destroy($id)
+    public function destroy(int $id): RedirectResponse
     {
-        return 'Aluno ' . $id . ' excluído com sucesso';
+        $aluno = Aluno::findOrFail($id);
+
+        Gate::authorize('delete', $aluno);
+
+        $aluno->delete();
+
+        return redirect('/alunos')
+            ->with('sucesso', 'Aluno excluído com sucesso!');
     }
 
+    public function porCurso(string $curso): Collection
+    {
+        Gate::authorize('viewAny', Aluno::class);
 
-    public function porCurso($curso)
-{
-    $alunos = Aluno::where('curso', $curso)->get();
+        return Aluno::where('curso', $curso)->get();
+    }
 
-    return $alunos;
-}
+    public function porNome(string $nome): Collection
+    {
+        Gate::authorize('viewAny', Aluno::class);
 
-public function porNome($nome)
-{
-    $alunos = Aluno::where('nome', 'like', '%' . $nome . '%')->get();
+        return Aluno::where('nome', 'like', '%'.$nome.'%')->get();
+    }
 
-    return $alunos;
-}
+    public function recentes(): Collection
+    {
+        Gate::authorize('viewAny', Aluno::class);
 
-public function recentes()
-{
-    $alunos = Aluno::orderBy('created_at', 'desc')->get();
+        return Aluno::orderBy('created_at', 'desc')->get();
+    }
 
-    return $alunos;
-}
+    public function quantidade(): int
+    {
+        Gate::authorize('viewAny', Aluno::class);
 
-
-public function quantidade()
-{
-    $quantidade = Aluno::count();
-
-    return $quantidade;
-}
-
+        return Aluno::count();
+    }
 }
