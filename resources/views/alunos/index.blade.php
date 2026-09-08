@@ -9,7 +9,9 @@
         <p>{{ session('sucesso') }}</p>
     @endif
 
-    <a href="{{ url('/alunos/create') }}">Cadastrar aluno</a>
+    @can('create', \App\Models\Aluno::class)
+        <a href="{{ route('alunos.create') }}">Cadastrar aluno</a>
+    @endcan
 
     @if($alunos->isEmpty())
         <p>Nenhum aluno cadastrado.</p>
@@ -23,6 +25,7 @@
                     <th>Ações</th>
                 </tr>
             </thead>
+
             <tbody>
                 @foreach($alunos as $aluno)
                     <tr>
@@ -30,23 +33,29 @@
                         <td>{{ $aluno->email }}</td>
                         <td>{{ $aluno->curso }}</td>
                         <td>
-                            <a href="{{ url('/alunos/' . $aluno->id) }}">
-                                Visualizar
-                            </a>
+                            @can('view', $aluno)
+                                <a href="{{ route('alunos.show', $aluno->id) }}">
+                                    Visualizar
+                                </a>
+                            @endcan
 
-                            <a href="{{ url('/alunos/' . $aluno->id . '/edit') }}">
-                                Editar
-                            </a>
+                            @can('update', $aluno)
+                                <a href="{{ route('alunos.edit', $aluno->id) }}">
+                                    Editar
+                                </a>
+                            @endcan
 
-                            <form action="{{ url('/alunos/' . $aluno->id) }}"
-                                  method="POST">
-                                @csrf
-                                @method('DELETE')
+                            @can('delete', $aluno)
+                                <form
+                                    action="{{ route('alunos.destroy', $aluno->id) }}"
+                                    method="POST"
+                                >
+                                    @csrf
+                                    @method('DELETE')
 
-                                <button type="submit">
-                                    Excluir
-                                </button>
-                            </form>
+                                    <button type="submit">Excluir</button>
+                                </form>
+                            @endcan
                         </td>
                     </tr>
                 @endforeach
