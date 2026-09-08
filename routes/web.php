@@ -34,6 +34,10 @@ Route::get('/dashboard', function (): View {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/admin', function (): string {
+    return 'Área administrativa: acesso permitido!';
+})->middleware(['auth', 'role:admin'])->name('admin');
+
 Route::middleware('auth')->group(function (): void {
     Route::get('/alunos', [AlunoController::class, 'index'])
         ->name('alunos.index');
